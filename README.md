@@ -2,7 +2,6 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sjinks_setup-wptl-action&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sjinks_setup-wptl-action)
 [![Build and Test](https://github.com/sjinks/setup-wptl-action/actions/workflows/ci.yml/badge.svg)](https://github.com/sjinks/setup-wptl-action/actions/workflows/ci.yml)
-[![Dependency Review](https://github.com/sjinks/setup-wptl-action/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/sjinks/setup-wptl-action/actions/workflows/dependency-review.yml)
 [![CodeQL Analysis](https://github.com/sjinks/setup-wptl-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/sjinks/setup-wptl-action/actions/workflows/codeql-analysis.yml)
 
 This action sets up WordPress and WordPress Test Library. WordPress plugins can make use of this action to run unit tests.
