@@ -1,0 +1,38 @@
+{
+  "name": "setup-wptl-action",
+  "version": "1.0.0",
+  "description": "Set up WordPress Test Library",
+  "main": "lib/src/main.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "package": "ncc build --minify",
+    "test": "jest",
+    "all": "npm run build && npm run lint:fix && npm run package && npm test"
+  },
+  "keywords": [],
+  "author": "Volodymyr Kolesnykov <volodymyr@wildwolf.name> (https://wildwolf.name/)",
+  "license": "MIT",
+  "devDependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/http-client": "^2.0.1",
+    "@actions/io": "^1.1.2",
+    "@actions/tool-cache": "^2.0.1",
+    "@myrotvorets/eslint-config-myrotvorets-ts": "^2.2.5",
+    "@taiyosen/easy-svn": "^1.0.14",
+    "@types/jest": "^27.0.1",
+    "@types/node": ">= 12",
+    "@types/semver": "^7.3.9",
+    "@vercel/ncc": "^0.33.0",
+    "jest": "^27.0.1",
+    "jest-sonar-reporter": "^2.0.0",
+    "semver": "^7.3.7",
+    "ts-jest": "^27.0.1",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.1.3"
+  },
+  "engines": {
+    "node": "16"
+  }
+}

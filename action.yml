@@ -1,0 +1,44 @@
+name: 'setup-wordpress-test-library'
+description: 'Sets up WordPress and WordPress test library'
+author: 'Volodymyr Kolesnykov'
+inputs:
+  version:
+    description: 'WordPress version'
+    required: false
+    default: 'latest'
+  cache:
+    description: 'Whether to use cache for WordPress and WordPress Test Library (nightly builds are never cached)'
+    required: false
+    default: 'true'
+  dir:
+    description: 'Directory to install WordPress and WordPress Test Library'
+    required: false
+    default: '/tmp'
+  db_user:
+    description: 'Database user'
+    required: false
+    default: 'root'
+  db_password:
+    description: 'Database password'
+    required: false
+    default: ''
+  db_name:
+    description: 'Database name'
+    required: false
+    default: 'wordpress_test'
+  db_host:
+    description: 'Database host'
+    required: false
+    default: 'localhost'
+
+outputs:
+  wp_version:
+    description: 'Actual WordPress version'
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+
+branding:
+  color: blue
+  icon: target
