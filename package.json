@@ -24,7 +24,7 @@
     "@types/jest": "^27.0.1",
     "@types/node": ">= 12",
     "@types/semver": "^7.3.9",
-    "@vercel/ncc": "^0.33.0",
+    "@vercel/ncc": "^0.34.0",
     "jest": "^27.0.1",
     "jest-sonar-reporter": "^2.0.0",
     "semver": "^7.3.7",
