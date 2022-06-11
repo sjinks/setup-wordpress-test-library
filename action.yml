@@ -17,11 +17,11 @@ inputs:
   db_user:
     description: 'Database user'
     required: false
-    default: 'root'
+    default: 'wordpress'
   db_password:
     description: 'Database password'
     required: false
-    default: ''
+    default: 'wordpress'
   db_name:
     description: 'Database name'
     required: false
@@ -29,7 +29,7 @@ inputs:
   db_host:
     description: 'Database host'
     required: false
-    default: 'localhost'
+    default: '127.0.0.1'
 
 outputs:
   wp_version:

@@ -11,6 +11,7 @@ module.exports = {
         '<rootDir>/dist/',
         '<rootDir>/lib/',
         '<rootDir>/node_modules/',
+        '<rootDir>/wptest/',
     ],
     testResultsProcessor: 'jest-sonar-reporter',
     reporters: [
