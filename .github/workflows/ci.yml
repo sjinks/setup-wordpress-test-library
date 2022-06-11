@@ -35,6 +35,8 @@ jobs:
       - name: Check out the source code
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
+      - run: env | sort
+
       - name: Set up WordPress and WordPress Test Library
         id: set1
         uses: ./
