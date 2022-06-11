@@ -1,0 +1,13 @@
+name: CodeQL Config
+
+paths:
+  - src/
+
+paths-ignore:
+  - dist
+  - lib
+  - wptest
+  - node_modules
+
+queries:
+  - uses: security-and-quality
