@@ -36,7 +36,6 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
       - name: Set up WordPress and WordPress Test Library
-        id: set1
         uses: ./
         with:
           version: latest
@@ -47,3 +46,48 @@ jobs:
           test -e /tmp/wordpress
           test -e /tmp/wordpress-tests-lib
           test -f /tmp/wordpress-tests-lib/wp-tests-config.php
+
+  integration:
+    name: Integration testing
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:latest
+        ports:
+          - '3306:3306'
+        env:
+          MYSQL_ROOT_PASSWORD: wordpress
+          MARIADB_INITDB_SKIP_TZINFO: 1
+          MYSQL_USER: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_DATABASE: wordpress_test
+    steps:
+      - name: Check out the source code
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@2.18.1
+        with:
+          coverage: none
+          php-version: "8.0"
+
+      - name: Install PHP Dependencies
+        uses: ramsey/composer-install@2.1.0
+        with:
+          working-directory: wptest
+
+      - name: Set up WordPress and WordPress Test Library
+        uses: ./
+        with:
+          version: latest
+
+      - name: Verify MariaDB connection
+        run: |
+          while ! mysqladmin ping -h 127.0.0.1 -P ${{ job.services.mysql.ports[3306] }} --silent; do
+            sleep 1
+          done
+        timeout-minutes: 1
+
+      - name: Run tests
+        run: vendor/bin/phpunit
+        working-directory: wptest

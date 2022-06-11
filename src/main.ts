@@ -29,10 +29,10 @@ function getInputs(): Inputs {
         version: core.getInput('version', options) || 'latest',
         cache: core.getBooleanInput('cache', options) && process.env.RUNNER_TOOL_CACHE !== undefined,
         dir: core.getInput('dir', options) || tmpdir(),
-        db_user: core.getInput('db_user', options) || 'root',
-        db_password: core.getInput('db_password', options) || '',
+        db_user: core.getInput('db_user', options) || 'wordpress',
+        db_password: core.getInput('db_password', options) || 'wordpress',
         db_name: core.getInput('db_name', options) || 'wordpress_test',
-        db_host: core.getInput('db_host', options) || 'localhost',
+        db_host: core.getInput('db_host', options) || '127.0.0.1',
     };
 
     result.dir = path.resolve(result.dir);
