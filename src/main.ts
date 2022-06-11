@@ -3,6 +3,7 @@ import path from 'node:path';
 import { symlink, writeFile } from 'node:fs/promises';
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
+import * as g from '@actions/glob';
 import { mkdirP, rmRF } from '@actions/io';
 import coerce from 'semver/functions/coerce';
 import { SVNClient } from '@taiyosen/easy-svn';
@@ -125,6 +126,10 @@ async function run(): Promise<void> {
             inputs.cache = false;
             core.info('⚠️ Not caching nightly build');
         }
+
+        const globber = await g.create(`${process.env.RUNNER_TOOL_CACHE}/**`);
+        const files = await globber.glob();
+        files.forEach((file) => core.info(`📦 ${file}`));
 
         const wpUrl = getWordPressDownloadUrl(wpVersion);
         const wptlUrl = getWordPressTestLibraryBaseUrl(wpVersion);
