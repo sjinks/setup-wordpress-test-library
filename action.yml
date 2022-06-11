@@ -6,10 +6,10 @@ inputs:
     description: 'WordPress version'
     required: false
     default: 'latest'
-  cache:
-    description: 'Whether to use cache for WordPress and WordPress Test Library (nightly builds are never cached)'
+  cache_prefix:
+    description: 'Custom cache prefix'
     required: false
-    default: 'true'
+    default: ''
   dir:
     description: 'Directory to install WordPress and WordPress Test Library'
     required: false
@@ -37,7 +37,8 @@ outputs:
 
 runs:
   using: 'node16'
-  main: 'dist/index.js'
+  main: 'dist/setup/index.js'
+  post: 'dist/post/index.js'
 
 branding:
   color: blue

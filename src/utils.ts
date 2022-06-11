@@ -35,3 +35,8 @@ export async function downloadAsText(url: string): Promise<string> {
 
     throw new Error(`Failed to download ${url}: error ${response.message.statusCode}`);
 }
+
+export function isGHES(): boolean {
+    const ghUrl = new URL(process.env.GITHUB_SERVER_URL || 'https://github.com');
+    return ghUrl.hostname.toLowerCase() !== 'github.com';
+}
