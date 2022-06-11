@@ -51,16 +51,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up PHP
-        uses: shivammathur/setup-php@2.18.1
+        uses: shivammathur/setup-php@v2
         with:
           coverage: none
           php-version: "8.0"
 
       - name: Install PHP Dependencies
-        uses: ramsey/composer-install@2.1.0
+        uses: ramsey/composer-install@v2
 
       - name: Set up WordPress and WordPress Test Library
-        uses: sjinks/setup-wordpress-test-library
+        uses: sjinks/setup-wordpress-test-library@master
         with:
           version: latest
 
