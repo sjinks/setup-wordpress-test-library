@@ -72,7 +72,7 @@ jobs:
           php-version: "8.0"
 
       - name: Install PHP Dependencies
-        uses: ramsey/composer-install@2.1.0
+        uses: ramsey/composer-install@f680dac46551dffb2234a240d65ae806c2999dd6 # tag=2.1.0
         with:
           working-directory: wptest
 
