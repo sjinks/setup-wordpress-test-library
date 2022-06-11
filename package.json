@@ -2,12 +2,11 @@
   "name": "setup-wptl-action",
   "version": "1.0.0",
   "description": "Set up WordPress Test Library",
-  "main": "lib/src/main.js",
   "scripts": {
     "build": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "package": "ncc build --minify",
+    "package": "ncc build -o dist/setup --minify --transpile-only src/main.ts && ncc build -o dist/post --minify --transpile-only src/post.ts",
     "test": "jest",
     "all": "npm run build && npm run lint:fix && npm run package && npm test"
   },
@@ -15,6 +14,7 @@
   "author": "Volodymyr Kolesnykov <volodymyr@wildwolf.name> (https://wildwolf.name/)",
   "license": "MIT",
   "devDependencies": {
+    "@actions/cache": "^2.0.6",
     "@actions/core": "^1.2.6",
     "@actions/http-client": "^2.0.1",
     "@actions/io": "^1.1.2",
