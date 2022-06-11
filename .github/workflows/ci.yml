@@ -1,0 +1,49 @@
+name: 'Build and Test'
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, '[ci skip]') || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - name: Check out the source code
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3.2.0
+        with:
+          node-version: '16'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run all
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the source code
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+
+      - name: Set up WordPress and WordPress Test Library
+        id: set1
+        uses: ./
+        with:
+          version: latest
+          dir: /tmp
+
+      - name: Verify
+        run: |
+          test -e /tmp/wordpress
+          test -e /tmp/wordpress-tests-lib
+          test -f /tmp/wordpress-tests-lib/wp-tests-config.php
