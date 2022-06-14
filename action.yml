@@ -1,4 +1,4 @@
-name: 'setup-wordpress-test-library'
+name: 'Set up WordPress Test Library'
 description: 'Sets up WordPress and WordPress test library'
 author: 'Volodymyr Kolesnykov'
 inputs:
