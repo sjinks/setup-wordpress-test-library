@@ -67,20 +67,13 @@ async function findCached(name: string, tool: string, inputs: Inputs): Promise<b
 
     if (inputs.has_cache) {
         const key = `1:${inputs.cache_prefix}:${tool}:${inputs.semver}`;
-        const workspace = process.env.GITHUB_WORKSPACE;
-        try {
-            process.env.GITHUB_WORKSPACE = inputs.dir;
 
-            core.info(`ℹ️ Checking cache key ${key} for ${tool}…`);
-            const result = await cache.restoreCache([tool], key);
+        core.info(`ℹ️ Checking cache key ${key} for ${tool}…`);
+        const result = await cache.restoreCache([tool], key);
 
-            if (result) {
-                core.info(`🚀 Using cached ${name}, key is ${key}`);
-                return true;
-            }
-        } finally {
-            // eslint-disable-next-line require-atomic-updates
-            process.env.GITHUB_WORKSPACE = workspace;
+        if (result) {
+            core.info(`🚀 Using cached ${name}, key is ${key}`);
+            return true;
         }
 
         core.saveState(`dir_${tool}`, inputs.dir);
@@ -168,7 +161,14 @@ async function run(): Promise<void> {
 
         const wpUrl = getWordPressDownloadUrl(wpVersion);
         const wptlUrl = getWordPressTestLibraryBaseUrl(wpVersion);
-        await Promise.all([downloadWordPress(wpUrl, inputs), downloadTestLibrary(wptlUrl, inputs)]);
+        const workspace = process.env.GITHUB_WORKSPACE;
+        try {
+            process.env.GITHUB_WORKSPACE = inputs.dir;
+            await Promise.all([downloadWordPress(wpUrl, inputs), downloadTestLibrary(wptlUrl, inputs)]);
+        } finally {
+            // eslint-disable-next-line require-atomic-updates
+            process.env.GITHUB_WORKSPACE = workspace;
+        }
 
         core.info('⚙️ Configuring WordPress…');
         await configureWordPress(wptlUrl, inputs);
