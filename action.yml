@@ -36,7 +36,7 @@ outputs:
     description: 'Actual WordPress version'
 
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/setup/index.js'
   post: 'dist/post/index.js'
 
