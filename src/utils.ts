@@ -1,13 +1,19 @@
 import { stat } from 'node:fs/promises';
 import { HttpClient } from '@actions/http-client';
 
+/**
+ * Sort an array of version strings in descending order.
+ *
+ * @param {string[]} versions -The array of version strings to sort.
+ * @returns {string[]} The sorted array of version strings.
+ */
 export function sortVersions(versions: string[]): string[] {
     return versions.sort((a, b) => {
         const aSplit = a.split('.');
         const bSplit = b.split('.');
         for (let i = 0; i < Math.max(aSplit.length, bSplit.length); ++i) {
-            const aPart = +(aSplit[i] || '0');
-            const bPart = +(bSplit[i] || '0');
+            const aPart = Number(aSplit[i] || '0');
+            const bPart = Number(bSplit[i] || '0');
             if (aPart !== bPart) {
                 return bPart - aPart;
             }
@@ -17,6 +23,13 @@ export function sortVersions(versions: string[]): string[] {
     });
 }
 
+/**
+ * Check if a given path is a directory.
+ *
+ * @async
+ * @param {string} path The path to check.
+ * @returns {Promise<boolean>} A promise that resolves to true if the path is a directory, false otherwise.
+ */
 export async function isDir(path: string): Promise<boolean> {
     try {
         const stats = await stat(path);
@@ -26,6 +39,14 @@ export async function isDir(path: string): Promise<boolean> {
     }
 }
 
+/**
+ * Download the content of a URL as a text string.
+ *
+ * @async
+ * @param {string} url The URL to download from.
+ * @returns {Promise<string>} A promise that resolves to the downloaded text.
+ * @throws {Error} If the status code of the response is not 200.
+ */
 export async function downloadAsText(url: string): Promise<string> {
     const client = new HttpClient('setup-wptl-action');
     const response = await client.get(url);
@@ -36,6 +57,11 @@ export async function downloadAsText(url: string): Promise<string> {
     throw new Error(`Failed to download ${url}: error ${response.message.statusCode}`);
 }
 
+/**
+ * Check if the GitHub server URL is not 'github.com', indicating it's a GitHub Enterprise Server (GHES).
+ *
+ * @returns {boolean} True if the GitHub server URL is not 'github.com', false otherwise.
+ */
 export function isGHES(): boolean {
     const ghUrl = new URL(process.env.GITHUB_SERVER_URL ?? 'https://github.com');
     return ghUrl.hostname.toLowerCase() !== 'github.com';

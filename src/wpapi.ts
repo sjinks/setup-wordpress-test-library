@@ -28,6 +28,12 @@ interface ApiResponse {
     translations: unknown[];
 }
 
+/**
+ * Get the latest WordPress version.
+ *
+ * @async
+ * @returns {Promise<string>} The latest WordPress version.
+ */
 export async function getLatestVersion(): Promise<string> {
     const client = new HttpClient();
     const json = await client.getJson<ApiResponse>('http://api.wordpress.org/core/version-check/1.7/');
@@ -38,6 +44,13 @@ export async function getLatestVersion(): Promise<string> {
     throw new Error(`Failed to fetch WordPress versions: error ${json.statusCode}`);
 }
 
+/**
+ * Get the latest version of a branch.
+ *
+ * @async
+ * @param {string} prefix The branch prefix.
+ * @returns {Promise<string>} The latest version of the branch.
+ */
 export async function getLatestBranchVersion(prefix: string): Promise<string> {
     const client = new HttpClient();
     const json = await client.getJson<ApiResponse>('https://api.wordpress.org/core/version-check/1.7/');
