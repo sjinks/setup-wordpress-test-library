@@ -63,6 +63,11 @@ export async function downloadAsText(url: string): Promise<string> {
  * @returns {boolean} True if the GitHub server URL is not 'github.com', false otherwise.
  */
 export function isGHES(): boolean {
-    const ghUrl = new URL(process.env.GITHUB_SERVER_URL ?? 'https://github.com');
+    const url = process.env.GITHUB_SERVER_URL;
+    if (!url) {
+        return false;
+    }
+
+    const ghUrl = new URL(url);
     return ghUrl.hostname.toLowerCase() !== 'github.com';
 }
