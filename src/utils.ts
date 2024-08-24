@@ -34,7 +34,7 @@ export async function isDir(path: string): Promise<boolean> {
     try {
         const stats = await stat(path);
         return stats.isDirectory();
-    } catch (e) {
+    } catch {
         return false;
     }
 }

@@ -36,6 +36,7 @@ interface ApiResponse {
  */
 export async function getLatestVersion(): Promise<string> {
     const client = new HttpClient();
+    // eslint-disable-next-line sonarjs/no-clear-text-protocols -- http:// endpoint returns different results
     const json = await client.getJson<ApiResponse>('http://api.wordpress.org/core/version-check/1.7/');
     if (json.statusCode === 200 && json.result) {
         return json.result.offers[0].version;
