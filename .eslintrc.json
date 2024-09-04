@@ -3,6 +3,7 @@
     "ecmaVersion": 2020,
     "project": ["./tsconfig.json"]
   },
+  "reportUnusedDisableDirectives": true,
   "extends": [
     "@myrotvorets/myrotvorets-ts"
   ],
