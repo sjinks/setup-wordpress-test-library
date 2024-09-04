@@ -1,30 +1,20 @@
-import { getLatestBranchVersion, getLatestVersion } from '../src/wpapi';
+/* eslint-disable no-await-in-loop */
+import './mocks/wpapi';
+
+import { describe, it } from 'node:test';
+import { equal } from 'node:assert/strict';
 import { resolveWordPressVersion } from '../src/wputils';
 
-jest.mock('../src/wpapi.ts');
-
-const mocked_getLatestVersion = getLatestVersion as jest.Mock;
-const mocked_getLatestBranchVersion = getLatestBranchVersion as jest.Mock;
-
-describe('resolveWordPressVersion', () => {
-    mocked_getLatestVersion.mockResolvedValue('9.9.9');
-    mocked_getLatestBranchVersion.mockImplementation((version) => {
-        switch (version) {
-            case '5':
-                return Promise.resolve('5.9.9');
-            case '5.5':
-                return Promise.resolve('5.5.9');
-            default:
-                return Promise.reject(new Error('This should not happen'));
-        }
-    });
-
-    test.each([
+void describe('resolveWordPressVersion', async () => {
+    for (const [version, expected] of [
         ['latest', '9.9.9'],
         ['5.x', '5.9.9'],
         ['5.5.x', '5.5.9'],
         ['5.9.9', '5.9.9'],
-    ])('should resolve %s to %s', (version, expected) =>
-        expect(resolveWordPressVersion(version)).resolves.toBe(expected),
-    );
+    ]) {
+        await it(`should resolve ${version} to ${expected}`, async () => {
+            const actual = await resolveWordPressVersion(version);
+            equal(actual, expected);
+        });
+    }
 });
