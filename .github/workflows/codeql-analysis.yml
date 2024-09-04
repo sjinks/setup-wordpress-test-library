@@ -4,26 +4,23 @@ on:
   push:
     branches:
       - master
-    paths:
-      - "src/**.ts"
-      - ".github/workflows/codeql-analysis.yml"
   pull_request:
     branches:
       - master
-    paths:
-      - "src/**.ts"
-      - ".github/workflows/codeql-analysis.yml"
   schedule:
     - cron: '24 5 * * 6'
+  workflow_dispatch:
 
 permissions:
-  actions: read
   contents: read
-  security-events: write
 
 jobs:
   analyze:
     name: Static Code Analysis with CodeQL
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -31,6 +28,17 @@ jobs:
         language:
           - javascript
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@5c7944e73c4c2a096b17a9cb74d65b6c2bbafbde # v2.9.1
+        with:
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+            uploads.github.com:443
+            objects.githubusercontent.com:443
+
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
@@ -42,3 +50,5 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@4dd16135b69a43b6c8efb853346f8437d92d3c93 # v3.26.6
+        with:
+          category: "/language:${{ matrix.language }}"
