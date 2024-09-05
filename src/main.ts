@@ -72,7 +72,7 @@ function resolveSemVer(version: string, inputs: Inputs): void {
  * @returns {Promise<boolean>} True if the tool was found in the cache, false otherwise.
  */
 async function findCached(name: string, tool: string, inputs: Inputs): Promise<boolean> {
-    if (!inputs.has_toolcache && inputs.semver) {
+    if (inputs.has_toolcache && inputs.semver) {
         info(`ℹ️ Checking tool cache for ${tool} ${inputs.semver}…`);
         const cachePath = findTool(tool, inputs.semver);
         info(`ℹ️ Tool cache path for ${tool} ${inputs.semver} is ${cachePath}`);
