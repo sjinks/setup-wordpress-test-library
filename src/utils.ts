@@ -40,22 +40,6 @@ export async function isDir(path: string): Promise<boolean> {
 }
 
 /**
- * Check if a given path is a file.
- *
- * @async
- * @param {string} path The path to check.
- * @returns {Promise<boolean>} A promise that resolves to true if the path is a file, false otherwise.
- */
-export async function fileExists(path: string): Promise<boolean> {
-    try {
-        const stats = await stat(path);
-        return stats.isFile();
-    } catch {
-        return false;
-    }
-}
-
-/**
  * Download the content of a URL as a text string.
  *
  * @async

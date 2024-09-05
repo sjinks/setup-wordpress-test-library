@@ -7,7 +7,7 @@ import { cacheDir, downloadTool, extractZip, find as findTool } from '@actions/t
 import { mkdirP, rmRF } from '@actions/io';
 import { coerce } from 'semver';
 import { SVNClient } from '@taiyosen/easy-svn';
-import { downloadAsText, fileExists, isDir, isGHES } from './utils';
+import { downloadAsText, isDir, isGHES } from './utils';
 import { getWordPressDownloadUrl, getWordPressTestLibraryBaseUrl, resolveWordPressVersion } from './wputils';
 
 interface Inputs {
@@ -62,6 +62,14 @@ function resolveSemVer(version: string, inputs: Inputs): void {
     }
 }
 
+async function cacheTool(path: string, name: string, inputs: Inputs): Promise<void> {
+    if (inputs.has_toolcache) {
+        info(`📦 Caching ${path} as ${name} ${inputs.semver}…`);
+        const dir = await cacheDir(path, name, inputs.semver!);
+        info(`ℹ️ Saved cache to ${dir}`);
+    }
+}
+
 /**
  * Find the cached version of the given tool.
  *
@@ -72,18 +80,18 @@ function resolveSemVer(version: string, inputs: Inputs): void {
  * @returns {Promise<boolean>} True if the tool was found in the cache, false otherwise.
  */
 async function findCached(name: string, tool: string, inputs: Inputs): Promise<boolean> {
-    if (!inputs.has_toolcache && inputs.semver) {
+    if (inputs.has_toolcache && inputs.semver) {
+        info(`ℹ️ Checking tool cache for ${tool} ${inputs.semver}…`);
         const cachePath = findTool(tool, inputs.semver);
         if (cachePath) {
             const resolvedPath = resolve(cachePath);
 
-            const configFile = join(resolvedPath, 'wp-tests-config-sample.php');
-            if (await fileExists(configFile)) {
-                info(`🚀 Using cached ${name} from ${resolvedPath}`);
-                await symlink(resolvedPath, `${inputs.dir}/${tool}`);
-                return true;
-            }
+            info(`🚀 Using cached ${name} from ${resolvedPath}`);
+            await symlink(resolvedPath, `${inputs.dir}/${tool}`);
+            return true;
         }
+
+        info(`😔 ${tool} ${inputs.semver} was not found in the tool cache`);
     }
 
     if (inputs.has_cache) {
@@ -94,6 +102,7 @@ async function findCached(name: string, tool: string, inputs: Inputs): Promise<b
 
         if (result) {
             info(`🚀 Using cached ${name}, key is ${key}`);
+            await cacheTool(join(inputs.dir, tool), tool, inputs);
             return true;
         }
 
@@ -121,9 +130,8 @@ async function downloadWordPress(url: string, inputs: Inputs): Promise<void> {
         info(`📥 Downloading WordPress…`);
         const file = await downloadTool(url, dest);
         const targetDir = await extractZip(file, inputs.dir);
-        if (inputs.has_toolcache) {
-            await cacheDir(`${targetDir}/wordpress`, 'wordpress', inputs.semver!);
-        }
+
+        await cacheTool(`${targetDir}/wordpress`, 'wordpress', inputs);
     } finally {
         await rmRF(dest);
     }
@@ -157,9 +165,7 @@ async function downloadTestLibrary(url: string, inputs: Inputs): Promise<void> {
         writeFile(join(inputs.dir, 'wordpress-tests-lib', 'wp-tests-config-sample.php'), config),
     ]);
 
-    if (inputs.has_toolcache) {
-        await cacheDir(`${inputs.dir}/wordpress-tests-lib`, 'wordpress-tests-lib', inputs.semver!);
-    }
+    await cacheTool(`${inputs.dir}/wordpress-tests-lib`, 'wordpress-tests-lib', inputs);
 }
 
 /**
