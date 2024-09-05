@@ -72,3 +72,12 @@ jobs:
       - name: Run tests
         run: vendor/bin/phpunit
         working-directory: wptest
+
+      - name: Set up WordPress and WordPress Test Library (from the tool cache)
+        uses: ./
+        with:
+          version: latest
+
+      - name: Rerun tests
+        run: vendor/bin/phpunit
+        working-directory: wptest
