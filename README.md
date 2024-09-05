@@ -57,10 +57,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           coverage: none
-          php-version: "8.0"
+          php-version: "8.2"
 
       - name: Install PHP Dependencies
-        uses: ramsey/composer-install@v2
+        uses: ramsey/composer-install@v3
 
       - name: Set up WordPress and WordPress Test Library
         uses: sjinks/setup-wordpress-test-library@master
@@ -77,3 +77,5 @@ jobs:
       - name: Run tests
         run: vendor/bin/phpunit
 ```
+
+See the [Integration Testing](.github/workflows/ci-integration.yml) workflow for a real-world example.
