@@ -40,6 +40,22 @@ export async function isDir(path: string): Promise<boolean> {
 }
 
 /**
+ * Check if a given path is a file.
+ *
+ * @async
+ * @param {string} path The path to check.
+ * @returns {Promise<boolean>} A promise that resolves to true if the path is a file, false otherwise.
+ */
+export async function fileExists(path: string): Promise<boolean> {
+    try {
+        const stats = await stat(path);
+        return stats.isFile();
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Download the content of a URL as a text string.
  *
  * @async
@@ -48,7 +64,7 @@ export async function isDir(path: string): Promise<boolean> {
  * @throws {Error} If the status code of the response is not 200.
  */
 export async function downloadAsText(url: string): Promise<string> {
-    const client = new HttpClient('setup-wptl-action');
+    const client = new HttpClient('setup-wptl-action', undefined, { allowRetries: true, maxRetries: 3 });
     const response = await client.get(url);
     if (response.message.statusCode === 200) {
         return response.readBody();

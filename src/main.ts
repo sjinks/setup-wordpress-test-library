@@ -1,13 +1,13 @@
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { symlink, writeFile } from 'node:fs/promises';
+import { readFile, symlink, writeFile } from 'node:fs/promises';
 import { type InputOptions, exportVariable, getInput, info, saveState, setFailed, setOutput } from '@actions/core';
 import { isFeatureAvailable as isCacheAvailable, restoreCache } from '@actions/cache';
 import { cacheDir, downloadTool, extractZip, find as findTool } from '@actions/tool-cache';
 import { mkdirP, rmRF } from '@actions/io';
 import { coerce } from 'semver';
 import { SVNClient } from '@taiyosen/easy-svn';
-import { downloadAsText, isDir, isGHES } from './utils';
+import { downloadAsText, fileExists, isDir, isGHES } from './utils';
 import { getWordPressDownloadUrl, getWordPressTestLibraryBaseUrl, resolveWordPressVersion } from './wputils';
 
 interface Inputs {
@@ -76,14 +76,18 @@ async function findCached(name: string, tool: string, inputs: Inputs): Promise<b
         const cachePath = findTool(tool, inputs.semver);
         if (cachePath) {
             const resolvedPath = resolve(cachePath);
-            info(`🚀 Using cached ${name} from ${resolvedPath}`);
-            await symlink(resolvedPath, `${inputs.dir}/${tool}`);
-            return true;
+
+            const configFile = join(resolvedPath, 'wp-tests-config-sample.php');
+            if (await fileExists(configFile)) {
+                info(`🚀 Using cached ${name} from ${resolvedPath}`);
+                await symlink(resolvedPath, `${inputs.dir}/${tool}`);
+                return true;
+            }
         }
     }
 
     if (inputs.has_cache) {
-        const key = `1:${inputs.cache_prefix}:${tool}:${inputs.semver}`;
+        const key = `2:${inputs.cache_prefix}:${tool}:${inputs.semver}`;
 
         info(`ℹ️ Checking cache key ${key} for ${tool}…`);
         const result = await restoreCache([tool], key);
@@ -141,14 +145,16 @@ async function downloadTestLibrary(url: string, inputs: Inputs): Promise<void> {
     await mkdirP(join(inputs.dir, 'wordpress-tests-lib'));
     const client = new SVNClient();
     client.setConfig({ silent: true });
-    await Promise.all([
+    const [, , config] = await Promise.all([
         client.checkout(`${url}/tests/phpunit/includes/`, `${inputs.dir}/wordpress-tests-lib/includes`),
         client.checkout(`${url}/tests/phpunit/data/`, `${inputs.dir}/wordpress-tests-lib/data`),
+        downloadAsText(`${url}/wp-tests-config-sample.php`),
     ]);
 
     await Promise.all([
         rmRF(`${inputs.dir}/wordpress-tests-lib/includes/.svn`),
         rmRF(`${inputs.dir}/wordpress-tests-lib/data/.svn`),
+        writeFile(join(inputs.dir, 'wordpress-tests-lib', 'wp-tests-config-sample.php'), config),
     ]);
 
     if (inputs.has_toolcache) {
@@ -160,17 +166,17 @@ async function downloadTestLibrary(url: string, inputs: Inputs): Promise<void> {
  * Configure WordPress with the given inputs.
  *
  * @async
- * @param {string} wptlUrl The URL to the WordPress Test Library.
  * @param {Inputs} inputs The inputs for the script.
  */
-async function configureWordPress(wptlUrl: string, inputs: Inputs): Promise<void> {
-    const config = (await downloadAsText(`${wptlUrl}/wp-tests-config-sample.php`))
+async function configureWordPress(inputs: Inputs): Promise<unknown> {
+    const dir = join(inputs.dir, 'wordpress-tests-lib');
+    const config = (await readFile(join(dir, 'wp-tests-config-sample.php'), 'utf8'))
         .replace('youremptytestdbnamehere', inputs.db_name)
         .replace('yourusernamehere', inputs.db_user)
         .replace('yourpasswordhere', inputs.db_password)
         .replace('localhost', inputs.db_host)
         .replace("dirname( __FILE__ ) . '/src/'", `'${inputs.dir}/wordpress/'`);
-    await writeFile(join(inputs.dir, 'wordpress-tests-lib', 'wp-tests-config.php'), config);
+    return writeFile(join(inputs.dir, 'wordpress-tests-lib', 'wp-tests-config.php'), config);
 }
 
 async function run(): Promise<void> {
@@ -209,14 +215,15 @@ async function run(): Promise<void> {
         }
 
         info('⚙️ Configuring WordPress…');
-        await configureWordPress(wptlUrl, inputs);
+        await configureWordPress(inputs);
 
         exportVariable('WP_TESTS_DIR', join(inputs.dir, 'wordpress-tests-lib'));
         setOutput('wp_directory', join(inputs.dir, 'wordpress'));
         setOutput('wptl_directory', join(inputs.dir, 'wordpress-tests-lib'));
         info('✅ Success');
     } catch (error) {
-        setFailed(`❌ ${(error as Error).message}`);
+        const err = error instanceof Error ? error : new Error('An unknown error occurred', { cause: error });
+        setFailed(`❌ ${err.message}`);
     }
 }
 
