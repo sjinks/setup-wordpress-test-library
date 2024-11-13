@@ -226,6 +226,7 @@ async function run(): Promise<void> {
         exportVariable('WP_TESTS_DIR', join(inputs.dir, 'wordpress-tests-lib'));
         setOutput('wp_directory', join(inputs.dir, 'wordpress'));
         setOutput('wptl_directory', join(inputs.dir, 'wordpress-tests-lib'));
+        saveState('ok_to_save_cache', 'yes');
         info('✅ Success');
     } catch (error) {
         const err = error instanceof Error ? error : new Error('An unknown error occurred', { cause: error });
