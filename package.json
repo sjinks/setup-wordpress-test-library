@@ -19,7 +19,7 @@
     "@actions/http-client": "^2.2.3",
     "@actions/io": "^1.1.3",
     "@actions/tool-cache": "^2.0.1",
-    "@myrotvorets/eslint-config-myrotvorets-ts": "^2.27.4",
+    "@myrotvorets/eslint-config-myrotvorets-ts": "^3.0.0",
     "@taiyosen/easy-svn": "^1.0.29",
     "@types/node": ">=22",
     "@types/semver": "^7.5.8",
