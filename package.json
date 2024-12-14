@@ -1,6 +1,6 @@
 {
   "name": "setup-wptl-action",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Set up WordPress Test Library",
   "scripts": {
     "build": "tsc",
