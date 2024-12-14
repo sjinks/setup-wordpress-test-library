@@ -216,7 +216,6 @@ async function run(): Promise<void> {
             process.env.GITHUB_WORKSPACE = inputs.dir;
             await Promise.all([downloadWordPress(wpUrl, inputs), downloadTestLibrary(wptlUrl, inputs)]);
         } finally {
-            // eslint-disable-next-line require-atomic-updates
             process.env.GITHUB_WORKSPACE = workspace;
         }
 
