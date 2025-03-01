@@ -50,15 +50,28 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
         with:
-          disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
             api.wordpress.org:80
             api.wordpress.org:443
+            archive.ubuntu.com:80
+            azure.archive.ubuntu.com:80
+            cdn.fwupd.org:443
+            esm.ubuntu.com:443
+            esm.ubuntu.com:80
+            motd.ubuntu.com:80
+            packages.microsoft.com:443
+            packages.microsoft.com:80
+            ppa.launchpad.net:80
+            ppa.launchpadcontent.net:80
+            security.ubuntu.com:80
             wordpress.org:443
             develop.svn.wordpress.org:443
             plugins.svn.wordpress.org:443
             github.com:443
+
+      - name: Install subversion
+        run: sudo apt-get update && sudo apt-get -y install subversion
 
       - name: Check out the source code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
