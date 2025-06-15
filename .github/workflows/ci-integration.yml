@@ -39,6 +39,7 @@ jobs:
             archive.ubuntu.com:80
             azure.archive.ubuntu.com:80
             cdn.fwupd.org:443
+            dl.cloudsmith.io:443
             esm.ubuntu.com:443
             esm.ubuntu.com:80
             motd.ubuntu.com:80
