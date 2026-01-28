@@ -16,7 +16,7 @@
   "devDependencies": {
     "@actions/cache": "^5.0.0",
     "@actions/core": "^2.0.0",
-    "@actions/http-client": "^3.0.0",
+    "@actions/http-client": "^4.0.0",
     "@actions/io": "^2.0.0",
     "@actions/tool-cache": "^3.0.0",
     "@myrotvorets/eslint-config-myrotvorets-ts": "^3.0.0",
