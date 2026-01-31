@@ -2,7 +2,7 @@
 import { it, test } from 'node:test';
 import { equal } from 'node:assert/strict';
 
-void test('resolveWordPressVersion', async (t) => {
+await test('resolveWordPressVersion', async (t) => {
     const mock = t.mock.module('../src/wpapi.mjs', {
         cache: true,
         namedExports: {
