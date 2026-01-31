@@ -16,5 +16,5 @@
       "resolveJsonModule": true
   },
   "compileOnSave": true,
-  "include": ["src/**.ts", "test/**.ts"]
+  "include": ["src/*.mts", "test/*.mts"]
 }

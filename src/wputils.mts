@@ -1,4 +1,4 @@
-import { getLatestBranchVersion, getLatestVersion } from './wpapi';
+import { getLatestBranchVersion, getLatestVersion } from './wpapi.mjs';
 
 const NIGHTLY_BUILD_URL = 'https://wordpress.org/nightly-builds/wordpress-latest.zip';
 const WORDPRESS_URL = 'https://wordpress.org/wordpress-';

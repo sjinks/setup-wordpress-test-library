@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import { deepEqual } from 'node:assert/strict';
-import { sortVersions } from '../src/utils';
+import { sortVersions } from '../src/utils.mjs';
 
 void describe('sortVersions', async () => {
     await it('should sort versions correctly', () => {

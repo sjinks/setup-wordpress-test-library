@@ -1,5 +1,5 @@
 import { HttpClient } from '@actions/http-client';
-import { sortVersions } from './utils';
+import { sortVersions } from './utils.mjs';
 
 interface Package {
     full: string;

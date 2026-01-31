@@ -121,7 +121,7 @@ jobs:
         run: npm ci
 
       - name: Rebuild the dist/ directory
-        run: npm run package
+        run: npm run build && npm run package
 
       - name: Check the diff
         run: |

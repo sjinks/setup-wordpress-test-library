@@ -7,8 +7,8 @@ import { cacheDir, downloadTool, extractZip, find as findTool } from '@actions/t
 import { mkdirP, rmRF } from '@actions/io';
 import { coerce } from 'semver';
 import { SVNClient } from '@taiyosen/easy-svn';
-import { downloadAsText, isDir, isGHES } from './utils';
-import { getWordPressDownloadUrl, getWordPressTestLibraryBaseUrl, resolveWordPressVersion } from './wputils';
+import { downloadAsText, isDir, isGHES } from './utils.mjs';
+import { getWordPressDownloadUrl, getWordPressTestLibraryBaseUrl, resolveWordPressVersion } from './wputils.mjs';
 
 interface Inputs {
     version: string;
