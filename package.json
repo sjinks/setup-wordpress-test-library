@@ -14,7 +14,7 @@
   "author": "Volodymyr Kolesnykov <volodymyr@wildwolf.name> (https://wildwolf.name/)",
   "license": "MIT",
   "devDependencies": {
-    "@actions/cache": "^5.0.0",
+    "@actions/cache": "^6.0.0",
     "@actions/core": "^2.0.0",
     "@actions/http-client": "^3.0.0",
     "@actions/io": "^2.0.0",
