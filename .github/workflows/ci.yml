@@ -127,7 +127,7 @@ jobs:
         run: |
           if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
             echo "::warning::There are changes in the built files."
-            if [ "${{ github.event.head_commit.committer.email }}" != "actions@github.com" ]; then
+            if [ "${COMMITTER_EMAIL}" != "actions@github.com" ]; then
               git config user.name "GitHub Actions"
               git config user.email actions@github.com
               git config push.default "current"
@@ -139,3 +139,5 @@ jobs:
               exit 1
             fi
           fi
+        env:
+          COMMITTER_EMAIL: ${{ github.event.head_commit.committer.email }}
