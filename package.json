@@ -28,7 +28,7 @@
     "node-reporter-gha": "^2.0.5",
     "semver": "^7.7.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.0"
   },
   "engines": {
     "node": "24"
