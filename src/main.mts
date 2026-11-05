@@ -1,7 +1,16 @@
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { readFile, symlink, writeFile } from 'node:fs/promises';
-import { type InputOptions, exportVariable, getInput, info, saveState, setFailed, setOutput } from '@actions/core';
+import { readFile, writeFile } from 'node:fs/promises';
+import {
+    type InputOptions,
+    exportVariable,
+    getInput,
+    info,
+    saveState,
+    setFailed,
+    setOutput,
+    warning,
+} from '@actions/core';
 import { isFeatureAvailable as isCacheAvailable, restoreCache } from '@actions/cache';
 import { cacheDir, downloadTool, extractZip, find as findTool } from '@actions/tool-cache';
 import { mkdirP, rmRF } from '@actions/io';
@@ -9,6 +18,7 @@ import { coerce } from 'semver';
 import { SVNClient } from '@taiyosen/easy-svn';
 import { downloadAsText, isDir, isGHES } from './utils.mjs';
 import { getWordPressDownloadUrl, getWordPressTestLibraryBaseUrl, resolveWordPressVersion } from './wputils.mjs';
+import { copyCachedTool, isUsableCache } from './cache-utils.mjs';
 
 interface Inputs {
     version: string;
@@ -80,6 +90,8 @@ async function cacheTool(path: string, name: string, inputs: Inputs): Promise<vo
  * @returns {Promise<boolean>} True if the tool was found in the cache, false otherwise.
  */
 async function findCached(name: string, tool: string, inputs: Inputs): Promise<boolean> {
+    const destination = join(inputs.dir, tool);
+    const marker = tool === 'wordpress' ? 'wp-includes/version.php' : 'wp-tests-config-sample.php';
     if (inputs.has_toolcache && inputs.semver) {
         info(`ℹ️ Checking tool cache for ${tool} ${inputs.semver}…`);
         const cachePath = findTool(tool, inputs.semver);
@@ -87,23 +99,33 @@ async function findCached(name: string, tool: string, inputs: Inputs): Promise<b
             const resolvedPath = resolve(cachePath);
 
             info(`🚀 Using cached ${name} from ${resolvedPath}`);
-            await symlink(resolvedPath, `${inputs.dir}/${tool}`);
-            return true;
+            await copyCachedTool(resolvedPath, destination);
+            if (await isUsableCache(destination, marker)) {
+                return true;
+            }
+            warning(`⚠️ Ignoring incomplete tool cache for ${name}`);
+            await rmRF(destination);
         }
 
         info(`😔 ${tool} ${inputs.semver} was not found in the tool cache`);
     }
 
     if (inputs.has_cache) {
-        const key = `2:${inputs.cache_prefix}:${tool}:${inputs.semver}`;
+        const key = `3:${inputs.cache_prefix}:${tool}:${inputs.semver}`;
 
         info(`ℹ️ Checking cache key ${key} for ${tool}…`);
         const result = await restoreCache([tool], key);
 
-        if (result) {
+        if (result && (await isUsableCache(destination, marker))) {
             info(`🚀 Using cached ${name}, key is ${key}`);
             await cacheTool(join(inputs.dir, tool), tool, inputs);
             return true;
+        }
+
+        if (result) {
+            warning(`⚠️ Ignoring incomplete cache for ${name}`);
+            await rmRF(destination);
+            return false;
         }
 
         saveState(`dir_${tool}`, inputs.dir);
