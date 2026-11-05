@@ -1,6 +1,6 @@
 {
   "name": "setup-wptl-action",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Set up WordPress Test Library",
   "type": "module",
   "scripts": {
