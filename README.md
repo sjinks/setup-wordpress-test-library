@@ -8,7 +8,7 @@ This action sets up WordPress and WordPress Test Library. WordPress plugins can 
 
 ## Inputs
 
-  * `version`: WordPress version to use. Can be `trunk` or `nightly` for the latest nightly build, `latest` for the latest available WordPress release, an explicit version number (like `6.0`) to install the specific WordPress version, or a partial version (`5.9.x`) to install the latest available patch for the specific WordPress release. The default value is `latest`.
+  * `version`: WordPress version to use. Can be `trunk` or `nightly` for the latest development source, `latest` for the latest available WordPress release, an explicit version number (like `6.0`) to install the specific WordPress version, or a partial version (`5.9.x`) to install the latest available patch for the specific WordPress release. The default value is `latest`. For `trunk` and `nightly`, core and the test library are exported from the same pinned revision of WordPress development SVN, rather than the periodically rebuilt nightly ZIP. These installs are not cached.
   * `dir`: target directory for WordPress and WordPress Test Library; the default value is `/tmp`. **Warning:** the system will delete `wordpress`, `wordpress-test-library`, and `wordpress.zip` from that directory if they exist.
   * `db_user`: database user for WordPress, `wordpress` by default;
   * `db_password`: database password for WordPress, `wordpress` by default;

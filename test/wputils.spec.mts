@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import { it, test } from 'node:test';
-import { equal } from 'node:assert/strict';
+import { equal, throws } from 'node:assert/strict';
 
 await test('resolveWordPressVersion', async (t) => {
     const mock = t.mock.module('../src/wpapi.mjs', {
@@ -27,6 +27,8 @@ await test('resolveWordPressVersion', async (t) => {
         ['5.x', '5.9.9'],
         ['5.5.x', '5.5.9'],
         ['5.9.9', '5.9.9'],
+        ['nightly', 'nightly'],
+        ['trunk', 'nightly'],
     ]) {
         await it(`should resolve ${version} to ${expected}`, async () => {
             const actual = await resolveWordPressVersion(version);
@@ -35,4 +37,12 @@ await test('resolveWordPressVersion', async (t) => {
     }
 
     mock.restore();
+});
+
+await test('release download URLs and test library tags remain unchanged', async () => {
+    const { getWordPressDownloadUrl, getWordPressTestLibraryBaseUrl } = await import('../src/wputils.mjs');
+    equal(getWordPressDownloadUrl('6.8.3'), 'https://wordpress.org/wordpress-6.8.3.zip');
+    equal(getWordPressTestLibraryBaseUrl('6.8.3'), 'https://develop.svn.wordpress.org/tags/6.8.3');
+    throws(() => getWordPressDownloadUrl('nightly'), /pinned SVN revision/u);
+    throws(() => getWordPressDownloadUrl('trunk'), /pinned SVN revision/u);
 });

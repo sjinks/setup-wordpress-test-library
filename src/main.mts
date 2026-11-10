@@ -19,6 +19,7 @@ import { SVNClient } from '@taiyosen/easy-svn';
 import { downloadAsText, isDir, isGHES } from './utils.mjs';
 import { getWordPressDownloadUrl, getWordPressTestLibraryBaseUrl, resolveWordPressVersion } from './wputils.mjs';
 import { copyCachedTool, isUsableCache } from './cache-utils.mjs';
+import { downloadNightlyWordPress } from './nightly.mjs';
 
 interface Inputs {
     version: string;
@@ -231,12 +232,16 @@ async function run(): Promise<void> {
         info(`ℹ️ Cache is available: ${inputs.has_cache ? 'yes' : 'no'}`);
         info(`ℹ️ Tool cache is available: ${inputs.has_toolcache ? 'yes' : 'no'}`);
 
-        const wpUrl = getWordPressDownloadUrl(wpVersion);
-        const wptlUrl = getWordPressTestLibraryBaseUrl(wpVersion);
         const workspace = process.env.GITHUB_WORKSPACE;
         try {
             process.env.GITHUB_WORKSPACE = inputs.dir;
-            await Promise.all([downloadWordPress(wpUrl, inputs), downloadTestLibrary(wptlUrl, inputs)]);
+            if (wpVersion === 'nightly') {
+                await downloadNightlyWordPress(inputs.dir);
+            } else {
+                const wpUrl = getWordPressDownloadUrl(wpVersion);
+                const wptlUrl = getWordPressTestLibraryBaseUrl(wpVersion);
+                await Promise.all([downloadWordPress(wpUrl, inputs), downloadTestLibrary(wptlUrl, inputs)]);
+            }
         } finally {
             process.env.GITHUB_WORKSPACE = workspace;
         }
