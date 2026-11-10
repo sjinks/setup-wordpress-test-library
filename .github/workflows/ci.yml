@@ -14,25 +14,6 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
-        with:
-          disable-file-monitoring: true
-          egress-policy: block
-          allowed-endpoints: >
-            api.github.com:443
-            github.com:443
-            nodejs.org:443
-            registry.npmjs.org:443
-            archive.ubuntu.com:443
-            *.archive.ubuntu.com:443
-            cdn.fwupd.org:443
-            esm.ubuntu.com:443
-            objects.githubusercontent.com:443
-            packages.microsoft.com:443
-            release-assets.githubusercontent.com:443
-            security.ubuntu.com:443
-
       - name: Check out the source code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -57,26 +38,6 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
-        with:
-          egress-policy: block
-          allowed-endpoints: >
-            api.wordpress.org:80
-            api.wordpress.org:443
-            archive.ubuntu.com:443
-            *.archive.ubuntu.com:443
-            cdn.fwupd.org:443
-            esm.ubuntu.com:443
-            objects.githubusercontent.com:443
-            packages.microsoft.com:443
-            release-assets.githubusercontent.com:443
-            security.ubuntu.com:443
-            wordpress.org:443
-            develop.svn.wordpress.org:443
-            plugins.svn.wordpress.org:443
-            github.com:443
-
       - name: Install subversion
         run: sudo apt-get update && sudo apt-get -y install subversion
 
