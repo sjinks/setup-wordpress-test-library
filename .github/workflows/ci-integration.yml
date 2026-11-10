@@ -12,7 +12,11 @@ permissions:
 
 jobs:
   integration:
-    name: Integration testing
+    name: Integration testing (${{ matrix.version }})
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [latest, nightly, trunk]
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -76,7 +80,7 @@ jobs:
       - name: Set up WordPress and WordPress Test Library
         uses: ./
         with:
-          version: latest
+          version: ${{ matrix.version }}
 
       - name: Verify MariaDB connection
         run: |
@@ -89,10 +93,10 @@ jobs:
         run: vendor/bin/phpunit
         working-directory: wptest
 
-      - name: Set up WordPress and WordPress Test Library (from the tool cache)
+      - name: Set up WordPress and WordPress Test Library again
         uses: ./
         with:
-          version: latest
+          version: ${{ matrix.version }}
 
       - name: Rerun tests
         run: vendor/bin/phpunit

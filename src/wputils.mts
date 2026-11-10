@@ -1,6 +1,5 @@
 import { getLatestBranchVersion, getLatestVersion } from './wpapi.mjs';
 
-const NIGHTLY_BUILD_URL = 'https://wordpress.org/nightly-builds/wordpress-latest.zip';
 const WORDPRESS_URL = 'https://wordpress.org/wordpress-';
 const SVN_URL = 'https://develop.svn.wordpress.org/';
 
@@ -34,8 +33,8 @@ export function resolveWordPressVersion(version: string): Promise<string> {
  * @returns {string} The download URL.
  */
 export function getWordPressDownloadUrl(version: string): string {
-    if (version === 'nightly') {
-        return NIGHTLY_BUILD_URL;
+    if (version === 'nightly' || version === 'trunk') {
+        throw new Error('Nightly WordPress must be installed from a pinned SVN revision');
     }
 
     return `${WORDPRESS_URL}${version}.zip`;
